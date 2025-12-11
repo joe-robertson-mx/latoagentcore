@@ -1,0 +1,16 @@
+default_agent: return_request_agent
+is_agentcore_create_with_iac: true
+agents:
+  return_request_agent:
+    name: return_request_agent
+    entrypoint: C:\Users\Joe.Robertson\Documents\Projects\lato-agent-langchain\latoagentcore\src\main.py
+    deployment_type: container
+    source_path: C:\Users\Joe.Robertson\Documents\Projects\lato-agent-langchain\latoagentcore\src
+    aws:
+      account: null
+      region: null
+    bedrock_agentcore:
+      agent_id: null
+      agent_arn: null
+      agent_session_id: null
+    is_generated_by_agentcore_create: true
