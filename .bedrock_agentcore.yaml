@@ -1,16 +1,60 @@
-default_agent: return_request_agent
-is_agentcore_create_with_iac: true
+default_agent: return_request
 agents:
-  return_request_agent:
-    name: return_request_agent
-    entrypoint: C:\Users\Joe.Robertson\Documents\Projects\lato-agent-langchain\latoagentcore\src\main.py
+  return_request:
+    name: return_request
+    entrypoint: C:/Users/Joe.Robertson/Documents/Projects/lato-agent-langchain/latoagentcore/src/return_request_agent.py
     deployment_type: container
-    source_path: C:\Users\Joe.Robertson\Documents\Projects\lato-agent-langchain\latoagentcore\src
+    runtime_type: null
+    platform: linux/arm64
+    container_runtime: none
+    source_path: null
     aws:
-      account: null
-      region: null
+      execution_role: arn:aws:iam::770071634381:role/AmazonBedrockAgentCoreSDKRuntime-us-east-1-7b4091f4bb
+      execution_role_auto_create: false
+      account: '770071634381'
+      region: us-east-1
+      ecr_repository: 770071634381.dkr.ecr.us-east-1.amazonaws.com/bedrock-agentcore-return_request
+      ecr_auto_create: false
+      s3_path: null
+      s3_auto_create: false
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+      lifecycle_configuration:
+        idle_runtime_session_timeout: null
+        max_lifetime: null
     bedrock_agentcore:
-      agent_id: null
-      agent_arn: null
+      agent_id: return_request-XMdRNYA3CY
+      agent_arn: arn:aws:bedrock-agentcore:us-east-1:770071634381:runtime/return_request-XMdRNYA3CY
       agent_session_id: null
-    is_generated_by_agentcore_create: true
+    codebuild:
+      project_name: bedrock-agentcore-return_request-builder
+      execution_role: arn:aws:iam::770071634381:role/AmazonBedrockAgentCoreSDKCodeBuild-us-east-1-7b4091f4bb
+      source_bucket: bedrock-agentcore-codebuild-sources-770071634381-us-east-1
+    memory:
+      mode: NO_MEMORY
+      memory_id: null
+      memory_arn: null
+      memory_name: null
+      event_expiry_days: 30
+      first_invoke_memory_check_done: false
+      was_created_by_toolkit: false
+    identity:
+      credential_providers: []
+      workload: null
+    aws_jwt:
+      enabled: false
+      audiences: []
+      signing_algorithm: ES384
+      issuer_url: null
+      duration_seconds: 300
+    authorizer_configuration: null
+    request_header_configuration: null
+    oauth_configuration: null
+    api_key_env_var_name: null
+    api_key_credential_provider_name: null
+    is_generated_by_agentcore_create: false

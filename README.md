@@ -82,3 +82,17 @@ The two easiest ways to invoke your runtime after deploying:
    ```
    {"prompt": "what can you do?"}
    ```
+
+## Using the return-request agent (streaming)
+
+You can invoke the rewritten return-request agent and receive streaming (SSE) responses by setting the `agent` field in the payload to `return_request` and including the `from` and `prompt` fields. Example payload:
+
+```
+{
+  "agent": "return_request",
+  "from": "joe@example.com",
+  "prompt": "Customer reports a broken rear derailleur. The bike was purchased in May."
+}
+```
+
+The runtime will return an SSE stream of JSON events with types `start`, `delta` (partial text chunks), and `done` (final summary and raw output). This is suitable for proxying to a client or consuming from an external service.
