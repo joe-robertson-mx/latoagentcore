@@ -20,7 +20,7 @@ USER_PROMPT_TEMPLATE = "From: {{From}}\nContent: {{InputContent}}"
 
 CUSTOMER_ORDERS_URL = "https://midaas-accp.mendixcloud.com/rest/ordermanagement/v1/order"
 # Use a Bedrock chat model that supports on-demand invocation without an inference profile.
-MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
+MODEL_ID = "anthropic.claude-sonnet-4-5-20250929-v1:0"
 
 @tool
 def get_customer_order_data_tool(email: str) -> Any:

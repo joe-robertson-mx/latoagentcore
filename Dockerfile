@@ -36,6 +36,7 @@ EXPOSE 8080
 # Copy entire project (respecting .dockerignore)
 COPY . .
 
-# Use the full module path
+# Configurable entrypoint - can be overridden at build or runtime
+ENV AGENT_ENTRYPOINT=src.enquiry_mgmt
 
-CMD ["opentelemetry-instrument", "python", "-m", "src.return_request_agent"]
+CMD ["sh", "-c", "opentelemetry-instrument python -m $AGENT_ENTRYPOINT"]
