@@ -71,7 +71,10 @@ AWS_REGION=eu-west-1
 PI_PROD_MCP_SSE_URL=https://...
 PI_PROD_MCP_USERNAME=...
 PI_PROD_MCP_PASSWORD=...
+
 ```
+
+See the Lato Product Inventory Mendix app for these credentials and MCP server details.
 
 ### 3. Run Locally
 
