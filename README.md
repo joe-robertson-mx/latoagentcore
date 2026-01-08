@@ -45,6 +45,7 @@ This solution uses:
 ### Prerequisites
 
 - Python 3.10+
+- [uv](https://docs.astral.sh/uv/) — Fast Python package manager
 - AWS CLI configured with appropriate credentials
 - Docker (for local development)
 
@@ -52,11 +53,13 @@ This solution uses:
 
 ```bash
 cd latoagentcore
-python -m venv .venv
+
+# Install dependencies with uv
+uv sync
+
+# Activate the virtual environment
 source .venv/Scripts/activate  # Windows Git Bash
 # or: source .venv/bin/activate  # Linux/Mac
-
-pip install -e .
 ```
 
 ### 2. Configure Environment Variables
