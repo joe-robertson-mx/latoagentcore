@@ -775,6 +775,7 @@ dependencies = [
     { name = "mcp" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "python-dotenv" },
     { name = "requests" },
     { name = "tiktoken" },
 ]
@@ -790,6 +791,7 @@ requires-dist = [
     { name = "mcp", specifier = ">=1.19.0" },
     { name = "pytest", specifier = ">=7.0.0" },
     { name = "pytest-asyncio", specifier = ">=0.21.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "tiktoken", specifier = "==0.11.0" },
 ]

@@ -30,7 +30,7 @@ agents:
     bedrock_agentcore:
       agent_id: lato_enquiry_mgmt-6EIknFF5l6
       agent_arn: arn:aws:bedrock-agentcore:eu-west-1:770071634381:runtime/lato_enquiry_mgmt-6EIknFF5l6
-      agent_session_id: d52bd73b-4660-4549-8fab-c137f38e175b
+      agent_session_id: 5129173c-abc7-45f4-ae87-c4a4e2f7efd8
     codebuild:
       project_name: bedrock-agentcore-lato_enquiry_mgmt-builder
       execution_role: arn:aws:iam::770071634381:role/AmazonBedrockAgentCoreSDKCodeBuild-eu-west-1-39396c42bd
@@ -148,7 +148,7 @@ agents:
     bedrock_agentcore:
       agent_id: lato_enquiry_mgmt-6EIknFF5l6
       agent_arn: arn:aws:bedrock-agentcore:eu-west-1:770071634381:runtime/lato_enquiry_mgmt-6EIknFF5l6
-      agent_session_id: d52bd73b-4660-4549-8fab-c137f38e175b
+      agent_session_id: 5129173c-abc7-45f4-ae87-c4a4e2f7efd8
     codebuild:
       project_name: bedrock-agentcore-lato_enquiry_mgmt-builder
       execution_role: arn:aws:iam::770071634381:role/AmazonBedrockAgentCoreSDKCodeBuild-eu-west-1-39396c42bd

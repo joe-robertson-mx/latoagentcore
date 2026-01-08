@@ -96,10 +96,8 @@ agentcore invoke '{"prompt": "joe@example.com, my gear set is jammed"}' --local
 agentcore launch
 
 # Invoke the deployed agent
-agentcore invoke '{"prompt": "joe@example.com, my gear set is jammed"}'
+agentcore invoke --agent=enquiry-mgmt '{"prompt":"frederich.torresi@optimumsystems.com, My Precision Gear Set with Serial No: 8dc04f7a-ec70-4c79-9eba-759396546948 has jammed, I think some of the cables have frayed.."}'
 
-# Use session management for multi-turn conversations
-agentcore invoke '{"prompt": "What about my order status?"}' --session-id "conv-123"
 ```
 
 ### 5. Monitor & Observe

@@ -15,8 +15,13 @@ from langchain_core.tools import tool, BaseTool, StructuredTool
 from langchain_aws import ChatBedrock
 from langgraph.graph import END, StateGraph
 import asyncio
+import os
 import requests
+from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 # =============================================================================
@@ -258,14 +263,19 @@ llm = BedrockCompatChatModel(model_id=MODEL_ID, model_kwargs={"temperature": 0.1
 
 
 # PI Product Inventory MCP client configuration (connection happens in async entrypoint)
+# Credentials loaded from environment variables - see .env.example
+PI_PROD_MCP_SSE_URL = os.getenv("PI_PROD_MCP_SSE_URL", "https://lato-product-inventory.apps.eu-1c.mendixcloud.com/mendix-mcp/sse")
+PI_PROD_MCP_USERNAME = os.getenv("PI_PROD_MCP_USERNAME", "User")
+PI_PROD_MCP_PASSWORD = os.getenv("PI_PROD_MCP_PASSWORD", "")
+
 mcp_client = MultiServerMCPClient(
     {
         "pi_prod": {
             "transport": "sse",
-            "url": "https://lato-product-inventory.apps.eu-1c.mendixcloud.com/mendix-mcp/sse",
+            "url": PI_PROD_MCP_SSE_URL,
             "headers": {
-                "Username": "User",
-                "Authorization": "Pass01",
+                "Username": PI_PROD_MCP_USERNAME,
+                "Authorization": PI_PROD_MCP_PASSWORD,
             },
             "timeout": 15.0,
             "sse_read_timeout": 60.0,
