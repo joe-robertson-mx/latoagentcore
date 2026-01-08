@@ -114,6 +114,9 @@ class BedrockCompatChatModel(ChatBedrock):
         sanitized = sanitize_messages_for_bedrock(messages)
         return await super()._agenerate(sanitized, stop=stop, run_manager=run_manager, **kwargs)
 
+
+
+
 MODEL_ID = "eu.anthropic.claude-sonnet-4-5-20250929-v1:0"
 SUPPORTED_CATEGORIES = {"ORDER", "WARRANTY CLAIM", "RETURN REQUEST", "OTHER"}
 

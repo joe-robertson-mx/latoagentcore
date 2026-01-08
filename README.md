@@ -1,58 +1,166 @@
 # Lato Agent Core
 
-Multi-agent system for handling customer requests (returns, orders, and general queries).
+A demo showcasing **Amazon Bedrock AgentCore** and **LangGraph** for the Lato Enquiry Management use case. This project demonstrates a multi-agent system that helps customer service representatives (CSRs) handle e-bike customer enquiries—including returns, orders, warranty claims, and general queries.
+
+## Overview
+
+This solution uses:
+
+- **[Amazon Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/)** — Enterprise-grade runtime for deploying and managing AI agents with zero infrastructure management
+- **[LangGraph](https://langchain-ai.github.io/langgraph/)** — Framework for building stateful, multi-agent applications as graphs
+- **[LangChain MCP Adapters](https://github.com/langchain-ai/langchain-mcp-adapters)** — Integration with Model Context Protocol (MCP) servers for external tool access
+- **Claude (via Amazon Bedrock)** — Foundation model powering agent reasoning
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Bedrock AgentCore Runtime                │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐                                            │
+│  │   Router    │  Classifies enquiry type                   │
+│  │   Agent     │  (ORDER, RETURN REQUEST, WARRANTY, OTHER)  │
+│  └──────┬──────┘                                            │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Specialist Worker Agents                │   │
+│  ├──────────────┬─────────────────┬────────────────────┤   │
+│  │ Return/      │    Order        │     General        │   │
+│  │ Warranty     │    Agent        │     Agent          │   │
+│  └──────────────┴─────────────────┴────────────────────┘   │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                    Tools                              │   │
+│  │  • CustomerData_Get (Mendix Order API)               │   │
+│  │  • MCP Tools (Product Inventory via SSE)             │   │
+│  │  • Classification Tools                               │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ## Quick Start
 
-### Local Testing
+### Prerequisites
 
-1. **Set up environment**
-   ```bash
-   cd latoagentcore
-   source .venv/Scripts/activate  # Windows Git Bash
-   # or: source .venv/bin/activate  # Linux/Mac
-   ```
+- Python 3.10+
+- AWS CLI configured with appropriate credentials
+- Docker (for local development)
 
-2. **Configure environment variables**
-   Copy `.env.example` to `.env` and fill in required values (AWS region, MCP credentials, etc.)
+### 1. Set Up Environment
 
-3. **Run local dev server**
-   ```bash
-   agentcore dev
-   ```
+```bash
+cd latoagentcore
+python -m venv .venv
+source .venv/Scripts/activate  # Windows Git Bash
+# or: source .venv/bin/activate  # Linux/Mac
 
-4. **Test with a request**
-   ```bash
-   agentcore invoke --dev '{"prompt": "joe@example.com, my gear set is jammed"}'
-   ```
+pip install -e .
+```
 
-### Deploy to AWS
+### 2. Configure Environment Variables
 
-1. **Deploy the agent**
-   ```bash
-   cd latoagentcore
-   agentcore deploy --agent enquiry-mgmt
-   ```
+Copy `.env.example` to `.env` and fill in required values:
 
-2. **Invoke the deployed runtime**
-   ```bash
-   agentcore invoke '{"prompt": "joe@example.com, my gear set is jammed"}'
-   ```
+```bash
+# AWS Configuration
+AWS_REGION=eu-west-1
 
-3. **View observability traces**
-   ```bash
-   agentcore obs list --agent enquiry-mgmt
-   agentcore obs show --session-id <session-id> --verbose
-   ```
+# MCP Server Credentials
+PI_PROD_MCP_SSE_URL=https://...
+PI_PROD_MCP_USERNAME=...
+PI_PROD_MCP_PASSWORD=...
+```
+
+### 3. Run Locally
+
+```bash
+# Launch local development server (requires Docker)
+agentcore launch --local
+
+# In another terminal, test with a sample request
+agentcore invoke '{"prompt": "joe@example.com, my gear set is jammed"}' --local
+```
+
+### 4. Deploy to AWS
+
+```bash
+# Deploy the agent to Bedrock AgentCore Runtime
+agentcore launch
+
+# Invoke the deployed agent
+agentcore invoke '{"prompt": "joe@example.com, my gear set is jammed"}'
+
+# Use session management for multi-turn conversations
+agentcore invoke '{"prompt": "What about my order status?"}' --session-id "conv-123"
+```
+
+### 5. Monitor & Observe
+
+Check agent status and access observability:
+
+```bash
+agentcore status
+```
+
+View traces and logs in the [AWS CloudWatch GenAI Observability dashboard](https://console.aws.amazon.com/cloudwatch/home#gen-ai-observability/agent-core):
+
+- **Agents View** — All deployed agents and their runtime metrics
+- **Sessions View** — Conversation sessions across agents
+- **Traces View** — Detailed execution traces and span information
+
+Tail logs directly via AWS CLI:
+
+```bash
+aws logs tail /aws/bedrock-agentcore/runtimes/<AGENT_ID>-DEFAULT --follow
+```
 
 ## Agents
 
-- **enquiry-mgmt** (default): Routes requests to specialized workers (return requests, orders, general queries)
-- **return_request**: Handles product return/repair requests
+| Agent | Description |
+|-------|-------------|
+| `enquiry-mgmt` (default) | Multi-agent router that classifies enquiries and delegates to specialist workers |
+| `return_request` | Standalone agent for handling product return/repair requests |
 
-## Structure
+## Project Structure
 
-- `src/enquiry_mgmt.py` - Multi-agent router and workers
-- `src/return_request_agent.py` - Return request handler
-- `src/mcp_client/client.py` - MCP client helpers (gateway + PI Prod SSE)
-- `.bedrock_agentcore.yaml` - Agent configuration for CLI
+```
+latoagentcore/
+├── .bedrock_agentcore.yaml   # AgentCore CLI configuration
+├── pyproject.toml            # Python dependencies
+├── src/
+│   ├── enquiry_mgmt.py       # Multi-agent LangGraph workflow (router + workers)
+│   ├── return_request_agent.py  # Standalone return request agent
+│   └── mcp_client/
+│       └── client.py         # MCP client helpers (Gateway + PI Prod SSE)
+├── test/                     # Unit tests
+└── terraform/                # Infrastructure as code (optional)
+```
+
+## Key Features
+
+- **Router-Worker Pattern** — Intelligent routing based on enquiry classification
+- **MCP Integration** — Connect to external systems via Model Context Protocol
+- **Structured Output** — Classification tools capture actionable recommendations for CSRs
+- **Session Management** — Multi-turn conversation support with memory
+- **Observability** — Built-in tracing and monitoring via CloudWatch
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `agentcore configure --entrypoint <file>` | Configure agent entrypoint |
+| `agentcore launch --local` | Run locally (requires Docker) |
+| `agentcore launch` | Deploy to AWS Bedrock AgentCore |
+| `agentcore invoke '<json>'` | Invoke the agent |
+| `agentcore invoke '<json>' --local` | Invoke local agent |
+| `agentcore invoke '<json>' --session-id <id>` | Invoke with session for multi-turn |
+| `agentcore status` | Check deployment status and get log paths |
+
+## Further Reading
+
+- [Amazon Bedrock AgentCore Documentation](https://docs.aws.amazon.com/bedrock-agentcore/)
+- [Bedrock AgentCore Starter Toolkit](https://aws.github.io/bedrock-agentcore-starter-toolkit/)
+- [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
+- [LangChain MCP Adapters](https://github.com/langchain-ai/langchain-mcp-adapters)
